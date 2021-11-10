@@ -30,12 +30,19 @@ jobs:
           docker tag ghcr.io/expfactory-experiments/${dirname}:latest ghcr.io/expfactory-experiments/${dirname}:${GITHUB_SHA::8} 
           docker images | grep expfactory
 
-      - name: Login and Deploy Test Container
+      - name: Log in to GitHub Container Registry
+        if: (github.event_name != 'pull_request')
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Deploy Test Container
         if: (github.event_name != 'pull_request')
         env:
           dirname: ${{ github.event.repository.name }}
         run: |
             docker images
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
             docker push ghcr.io/expfactory-experiments/${dirname}
             docker push ghcr.io/expfactory-experiments/${GITHUB_SHA::8}
