@@ -44,5 +44,5 @@ jobs:
           dirname: ${{ github.event.repository.name }}
         run: |
             docker images
-            docker push ghcr.io/expfactory-experiments/${dirname}
-            docker push ghcr.io/expfactory-experiments/${GITHUB_SHA::8}
+            docker push ghcr.io/expfactory-experiments/${dirname}:latest
+            docker push ghcr.io/expfactory-experiments/${dirname}:${GITHUB_SHA::8}
